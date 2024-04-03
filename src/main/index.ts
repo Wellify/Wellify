@@ -1,9 +1,11 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import getActiveWindow from './script.js'
 import axios from 'axios'
+
+let mainWindow
 
 function createWindow(): void {
   // Create the browser window.
@@ -19,14 +21,14 @@ function createWindow(): void {
     })
   })
 
-  const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
     width: 1200,
     height: 700,
     minWidth: 1200,
     minHeight: 700,
     maxWidth: 1200,
     maxHeight: 700,
-    show: false,
+    // show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -52,7 +54,14 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  mainWindow.on("close", (event) => {
+    event.preventDefault()
+    mainWindow.hide()
+  })
 }
+
+let tray: Tray | null = null
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -67,6 +76,22 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
+
+  tray = new Tray(icon)
+  const contextMenu = Menu.buildFromTemplate([
+    { label: "Show App", click: function() {
+      mainWindow.show()
+    } },
+    { label: "Quit", click: function () {
+        if (process.platform !== 'darwin') {
+          mainWindow.destroy()
+          app.quit()
+        }
+    }}
+  ]);
+  tray.setToolTip("Wellify")
+  tray.setContextMenu(contextMenu)
+
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
@@ -93,9 +118,9 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // if (process.platform !== 'darwin') {
+  //   app.quit()
+  // }
 })
 
 // In this file you can include the rest of your app"s specific main process
