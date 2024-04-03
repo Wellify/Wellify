@@ -1,22 +1,18 @@
 import React, { useContext } from 'react'
-import * as pose from '@mediapipe/pose'
-import * as cam from '@mediapipe/camera_utils'
-import * as drawingUtils from '@mediapipe/drawing_utils'
 import Button from '@mui/material/Button'
 import { useRef, useEffect, useState } from 'react'
 import Slouch from './Posture/Slouch'
 import LookAway from './Posture/LookAway'
 import { UserContext } from '@renderer/contexts/User'
 import EyeDistance from './Posture/EyeDistance'
-import { Box, CircularProgress, LinearProgress, Typography } from '@mui/material'
+import { CircularProgress, Typography } from '@mui/material'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const PostureDetection: React.FC<any> = ({ webcamRef }) => {
-  const { modelComplexity } = useContext(UserContext)
-  // const webcamRef = useRef<HTMLVideoElement>(null)
+  console.log(window)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  // a 'union type' variable. Can either be of type cam.Camera or null. Initialise to a value of null.
-  let camera: cam.Camera | null = null
+  let camera = null
+  const { modelComplexity } = useContext(UserContext)
 
   const [postureData, setPostureData] = useState(null)
   const [startPosition, setStartPosition] = useState(null)
@@ -29,7 +25,7 @@ const PostureDetection: React.FC<any> = ({ webcamRef }) => {
   const [sessionStarting, setSessionStarting] = useState(false)
   const [progress, setProgress] = React.useState(0)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function onResults(results: any): void {
+  function onResults(results) {
     if (isLoading) {
       setIsLoading(false)
     }
@@ -45,34 +41,38 @@ const PostureDetection: React.FC<any> = ({ webcamRef }) => {
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height)
 
     if (results.poseLandmarks) {
-      drawingUtils.drawConnectors(canvasCtx, results.poseLandmarks, pose.POSE_CONNECTIONS, {
+      window.drawConnectors(canvasCtx, results.poseLandmarks, window.POSE_CONNECTIONS, {
         visibilityMin: 0.65,
         color: 'white'
       })
-      drawingUtils.drawLandmarks(
+      window.drawLandmarks(
         canvasCtx,
-        Object.values(pose.POSE_LANDMARKS_LEFT).map((index) => results.poseLandmarks[index]),
+        Object.values(window.POSE_LANDMARKS_LEFT).map((index) => results.poseLandmarks[index]),
         { visibilityMin: 0.65, color: 'white', fillColor: 'rgb(0,100,197)' }
       )
-      drawingUtils.drawLandmarks(
+      window.drawLandmarks(
         canvasCtx,
-        Object.values(pose.POSE_LANDMARKS_RIGHT).map((index) => results.poseLandmarks[index]),
+        Object.values(window.POSE_LANDMARKS_RIGHT).map((index) => results.poseLandmarks[index]),
         { visibilityMin: 0.65, color: 'white', fillColor: 'rgb(137,201,251)' }
       )
-      drawingUtils.drawLandmarks(
+      window.drawLandmarks(
         canvasCtx,
-        Object.values(pose.POSE_LANDMARKS_NEUTRAL).map((index) => results.poseLandmarks[index]),
+        Object.values(window.POSE_LANDMARKS_NEUTRAL).map((index) => results.poseLandmarks[index]),
         { visibilityMin: 0.65, color: 'white', fillColor: 'white' }
       )
     }
     canvasCtx.restore()
   }
+
   useEffect(() => {
+    if (typeof Pose === 'undefined' || typeof Camera === 'undefined') {
+      console.error('MediaPipe libraries are not loaded.')
+      return
+    }
+
     if (!hasLoaded) {
-      const mpPose = new pose.Pose({
-        locateFile: (file): string => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-        }
+      const mpPose = new window.Pose({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
       })
       mpPose.setOptions({
         selfieMode: true,
@@ -85,36 +85,29 @@ const PostureDetection: React.FC<any> = ({ webcamRef }) => {
       })
 
       if (webcamRef.current && canvasRef.current) {
-        camera = new cam.Camera(webcamRef.current, {
-          onFrame: async (): Promise<void> => {
-            const canvasElement = canvasRef.current
-            const width = 640
-            const height = 480
-            if (canvasElement) {
-              canvasElement.width = width
-              canvasElement.height = height
-            }
-            if (webcamRef.current) {
-              await mpPose.send({ image: webcamRef.current })
-            }
+        camera = new window.Camera(webcamRef.current, {
+          onFrame: async () => {
+            await mpPose.send({ image: webcamRef.current })
           }
         })
 
         camera
           .start()
           .then(() => {
-            setHasLoaded(false)
+            setHasLoaded(true)
           })
           .catch((error) => {
             console.error('Camera error:', error)
           })
+
         mpPose.onResults(onResults)
       }
     }
-    return (): void => {
-      camera?.stop()
+
+    return () => {
+      if (camera) camera.stop()
     }
-  }, [hasLoaded])
+  }, [hasLoaded, modelComplexity, webcamRef.current, canvasRef.current])
 
   const handleClick = (): void => {
     if (!sessionRunning) {
