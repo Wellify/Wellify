@@ -1,9 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Tray, Menu, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import getActiveWindow from './script.js'
 import axios from 'axios'
+import path from 'path'
 
 let mainWindow
 
@@ -21,7 +22,7 @@ function createWindow(): void {
     })
   })
 
-    mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 700,
     minWidth: 1200,
@@ -77,17 +78,24 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  tray = new Tray(icon)
+  const image = nativeImage.createFromPath(
+    path.join(__dirname, "../../resources/icon.png")
+  );
+  tray = new Tray(image.resize({ width: 16, height: 16}))
   const contextMenu = Menu.buildFromTemplate([
-    { label: "Show App", click: function() {
-      mainWindow.show()
-    } },
-    { label: "Quit", click: function () {
+    {
+      label: "Show App", click: function () {
+        mainWindow.show()
+      }
+    },
+    {
+      label: "Quit", click: function () {
         if (process.platform !== 'darwin') {
           mainWindow.destroy()
           app.quit()
         }
-    }}
+      }
+    }
   ]);
   tray.setToolTip("Wellify")
   tray.setContextMenu(contextMenu)
@@ -103,8 +111,8 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('get-window', () => {
     return getActiveWindow()
-  })  
-    
+  })
+
   createWindow()
 
   app.on('activate', function () {
