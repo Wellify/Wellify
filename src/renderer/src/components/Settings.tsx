@@ -36,12 +36,7 @@ const Settings: React.FC = () => {
     setModelComplexity(Number(event.target.value))
     localStorage.setItem('modelComplexity', JSON.stringify(event.target.value))
   }
-
-  function handleCameraChange(event): void {
-    setCamera(event.target.value)
-    localStorage.setItem('camera', JSON.stringify(event.target.value))
-  }
-
+  
   function handlePostureChange(event): void {
     setPostureStrictness(event.target.value)
     localStorage.setItem('postureStrictness', JSON.stringify(event.target.value))
@@ -72,24 +67,9 @@ const Settings: React.FC = () => {
           width: '90%'
         }}
       >
-        <br />
-        <label>Camera: </label>
-        <Select
-          value={camera}
-          onChange={handleCameraChange}
-          style={{ minWidth: '150px' }}
-          inputProps={{ 'aria-label': 'Without label' }}
-        >
-          {cameras.map((camera) => (
-            <MenuItem key={camera} value={camera}>
-              {camera}
-            </MenuItem>
-          ))}
-        </Select>
-        <Button onClick={reloadCamera}>Refresh</Button>
-        <br />
-        <br />
-        <label>Model Performance: </label>
+        <label>Model Performance </label>
+        <br></br>
+        <br></br>
         <Select
           value={modelComplexity}
           onChange={handleChange}
@@ -108,7 +88,12 @@ const Settings: React.FC = () => {
         </Select>
         <br />
         <br />
-        <label>Posture Strictness: </label>
+        <br>
+        </br>
+        <br></br>
+        <label>Posture Strictness&nbsp;&nbsp;&nbsp; </label>
+        <br></br>
+        <br></br>
         <Select
           value={postureStrictness}
           onChange={handlePostureChange}
