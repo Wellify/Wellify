@@ -79,8 +79,9 @@ app.whenReady().then(() => {
   })
 
   const image = nativeImage.createFromPath(
-    path.join(__dirname, "../../resources/icon.png")
+    path.join(__dirname, "../../resources/Wellify_2.png")
   );
+
   tray = new Tray(image.resize({ width: 16, height: 16}))
   const contextMenu = Menu.buildFromTemplate([
     {
