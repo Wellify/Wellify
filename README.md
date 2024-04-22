@@ -1,28 +1,28 @@
 # Wellify
 
-**Wellify** is a cross-platform desktop application designed to promote healthy work habits through posture tracking and work habit analysis. Built with Electron, React, and TypeScript, it leverages advanced machine learning models to monitor postural changes and provides real-time alerts to users. In addition to posture tracking, Wellify integrates emotion recognition via Morphcast to offer insights into users' emotions throughout their work sessions. This unique combination of features aims to enhance the overall well-being and productivity of its users.
+**Wellify** is a cross-platform desktop application designed to promote healthy work habits through posture tracking and work habit analysis. Built with Electron, React, and TypeScript, it leverages advanced machine learning models to monitor postural changes and provides real-time alerts to users. In addition to posture tracking, Wellify integrates emotion recognition via Morphcast to offer insights into users' emotions throughout their work sessions. This unique combination of features aims to enhance its users' overall well-being and productivity.
 
 
 ## Features
 
-- **Posture Tracking**: Utilizes machine learning models to monitor and analyze users' posture in real time.
+- **Posture Tracking**: Utilises machine learning models to monitor and analyze users' postures in real-time.
 - **Emotion Insights**: Integrates with Morphcast to track and plot emotions against user activity, offering a new layer of self-awareness during work sessions.
 - **Activity Metrics**: Provides detailed metrics on user activity, such as the number of slouches detected per session, to encourage healthier work habits.
 - **Cross-Platform Support**: Available for Linux, macOS, and Windows, ensuring accessibility for all users.
-- **Real-Time Alerts**: Sends notifications to the user to correct unhealthy postures or work habits as they are detected.
+- **Real-Time Alerts**: Sends users notifications to correct unhealthy postures or work habits as they are detected.
 - **Session Analytics**: Generates reports on each work session, allowing users to track their progress over time.
 
 
 ## Future Development
 
-Currently Wellify is in the final stage of development. Motion and Emotion tracking with alerts is fully functional in the dev environment but we want to provide a full build available for download. Additioanlly we want to finalise the database integration so that users can have personalised metrics available to them (currently the statistics page uses faker.js for demo purposes). 
+Currently, Wellify is in the final stage of development. Motion and Emotion tracking with alerts is fully functional in the dev environment but we want to provide a full build available for download. Additionally, we want to finalise the database integration so that users can have personalised metrics available to them (currently the statistics page uses faker.js for demo purposes). 
 
 ## Demo
 ![Wellify Demo](WellifyDemo.gif)
 
 
 ## Showcase Video
-Watch our showcase on youtube [Wellify Showcase](https://youtu.be/TR9Lf3g4rKk)
+Watch our showcase on YouTube [Wellify Showcase](https://youtu.be/TR9Lf3g4rKk)
 
 
 ## Installation Instructions
@@ -63,7 +63,7 @@ Wellify was created by [@crdavidson1](https://github.com/crdavidson1), [@xiamond
 
 This project was created as part of the Northcoders Software Development bootcamp. All of the tutors were incredibly helpful in the learning journey and their feedback whilst building this project was invaluable.
 
-A special thanks to the team at MorphCast who kindly granted us an educational licesne to their fantastic API.
+A special thanks to the team at MorphCast who kindly granted us an educational license to their fantastic API.
 
 
 ## Support
